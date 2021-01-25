@@ -1,70 +1,68 @@
-# Getting Started with Create React App
+# Phaser 3 React Webpack Project Template
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Built from the [Phaser 3 Template](https://github.com/photonstorm/phaser3-project-template), this boilerplate gives you Phaser and React out of the box. Full details on [Integrating React and Phaser 3 Tutorial](https://medium.com/@Tnodes/integrating-react-and-phaser-3-tutorial-eb96717d4a9d).
 
-## Available Scripts
+ES6 support via [Babel 7](https://babeljs.io/) and [Webpack 4](https://webpack.js.org/). Includes hot-reloading for development and production-ready builds.
 
-In the project directory, you can run:
+Loading images via JavaScript module `import` is also supported.
 
-### `npm start`
+## Quickstart
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+`git clone https://github.com/nodes777/phaser3-react-template`
+`npm install`
+`npm start`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Note: The default browser that opens is Chrome. If you don't have Chrome or wish to change the opened browser, change the start script in package.json. More details on [this webpack-cli thread](https://github.com/webpack/webpack-cli/issues/2001).
 
-### `npm test`
+`"start": "webpack serve --config webpack/base.js --open <your-preferred-browser.exe>"`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Requirements
 
-### `npm run build`
+[Node.js](https://nodejs.org) is required to install dependencies and run scripts via `npm`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Available Commands
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Command         | Description                                                                     |
+| --------------- | ------------------------------------------------------------------------------- |
+| `npm install`   | Install project dependencies                                                    |
+| `npm start`     | Build project and open web server running project                               |
+| `npm run build` | Builds code bundle with production settings (minification, uglification, etc..) |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Writing Code
 
-### `npm run eject`
+After cloning the repo, run `npm install` from your project directory. Then, you can start the local development
+server by running `npm start`.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+After starting the development server with `npm start`, you can edit any files in the `src` folder
+and webpack will automatically recompile and reload your server (available at `http://localhost:8080`
+by default).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Customizing Template
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Babel
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+You can write modern ES6+ JavaScript and Babel will transpile it to a version of JavaScript that you
+want your project to support. The targeted browsers are set in the `.babelrc` file and the default currently
+targets all browsers with total usage over "0.25%" but excludes IE11 and Opera Mini.
 
-## Learn More
+```
+"browsers": [
+  ">0.25%",
+  "not ie 11",
+  "not op_mini all"
+]
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Webpack
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+If you want to customize your build, such as adding a new webpack loader or plugin (i.e. for loading CSS or fonts), you can
+modify the `webpack/base.js` file for cross-project changes, or you can modify and/or create
+new configuration files and target them in specific npm tasks inside of `package.json'.
 
-### Code Splitting
+## Deploying Code
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+After you run the `npm run build` command, your code will be built into a single bundle located at
+`dist/bundle.min.js` along with any other assets you project depended.
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+If you put the contents of the `dist` folder in a publicly-accessible location (say something like `http://mycoolserver.com`),
+you should be able to open `http://mycoolserver.com/index.html` and play your game.

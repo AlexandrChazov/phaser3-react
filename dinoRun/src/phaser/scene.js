@@ -1,95 +1,64 @@
-// import { Body } from "matter";
-import Phaser from "phaser";
-import React from "react";
-import ReactDOM from "react-dom";
+// import Phaser from "phaser";
+// import logoImg from "../assets/logo.png";
+import styles from './Scene.module.css';
+import platform from '../assets/platform.png';
+import dino from '../assets/dino.png';
+import dino_jump from '../assets/dino_jump.png';
+import dino_fall from '../assets/dino_fall.png';
+import coin from '../assets/coin.png';
+import fire from '../assets/fire.png';
+import mountain from '../assets/mountain.png';
 
-import styles from './Phaser/Scene.module.css';
 
-import platform from './assets/platform.png';
-import dino from './assets/dino.png';
-import dino_jump from './assets/dino_jump.png';
-import dino_fall from './assets/dino_fall.png';
-import coin from './assets/coin.png';
-import fire from './assets/fire.png';
-import mountain from './assets/mountain.png';
-
-//console.log(App);
-let game;
-
-// global game options
 let gameOptions = {
 
-    // platform speed range, in pixels per second
-    platformSpeedRange: [300, 300],
+  // platform speed range, in pixels per second
+  platformSpeedRange: [300, 300],
 
-    // mountain speed, in pixels per second
-    mountainSpeed: 80,
+  // mountain speed, in pixels per second
+  mountainSpeed: 80,
 
-    // spawn range, how far should be the rightmost platform from the right edge
-    // before next platform spawns, in pixels
-    spawnRange: [80, 300],
+  // spawn range, how far should be the rightmost platform from the right edge
+  // before next platform spawns, in pixels
+  spawnRange: [80, 300],
 
-    // platform width range, in pixels
-    platformSizeRange: [90, 300],
+  // platform width range, in pixels
+  platformSizeRange: [90, 300],
 
-    // a height range between rightmost platform and next platform to be spawned
-    platformHeightRange: [-5, 5],
+  // a height range between rightmost platform and next platform to be spawned
+  platformHeightRange: [-5, 5],
 
-    // a scale to be multiplied by platformHeightRange
-    platformHeighScale: 20,
+  // a scale to be multiplied by platformHeightRange
+  platformHeighScale: 20,
 
-    // platform max and min height, as screen height ratio
-    platformVerticalLimit: [0.4, 0.8],
+  // platform max and min height, as screen height ratio
+  platformVerticalLimit: [0.4, 0.8],
 
-    // player gravity
-    playerGravity: 900,
+  // player gravity
+  playerGravity: 900,
 
-    // player jump force
-    jumpForce: 400,
+  // player jump force
+  jumpForce: 400,
 
-    // player starting X position
-    playerStartPosition: 200,
+  // player starting X position
+  playerStartPosition: 200,
 
-    // consecutive jumps allowed
-    jumps: 2,
+  // consecutive jumps allowed
+  jumps: 2,
 
-    // % of probability a coin appears on the platform
-    coinPercent: 25,
+  // % of probability a coin appears on the platform
+  coinPercent: 25,
 
-    // % of probability a fire appears on the platform
-    firePercent: 25
+  // % of probability a fire appears on the platform
+  firePercent: 25
 }
 
-window.onload = function() {
-
-    // object containing configuration options
-    let gameConfig = {
-        type: Phaser.AUTO,
-        width: 1334,
-        height: 750,
-        scene: [preloadGame, playGame],
-        backgroundColor: 0x87CEEB,
-
-        // physics settings
-        physics: {
-            default: "arcade"
-        }
-    }
-    
-    game = new Phaser.Game(gameConfig);
-    window.focus();
-    resize();
-    window.addEventListener("resize", resize, false);
-}
-
-// preloadGame scene
-class preloadGame extends Phaser.Scene{
-    constructor(){
-        super("PreloadGame");
-    }
-
-    preload(){
-        this.load.image("platform", platform);
+class playGame extends Phaser.Scene {
+  constructor() {
+    super("PlayGame");
+  }
+  preload() {
+    this.load.image("platform", platform);
 
         // player is a sprite sheet made by 24x48 pixels
         this.load.spritesheet("player", dino, {
@@ -124,87 +93,63 @@ class preloadGame extends Phaser.Scene{
           frameWidth: 512,
           frameHeight: 512
       });
-    }
-    create(){
+  }
+  create() {
+    // setting player animation
+    this.anims.create({
+      key: "run",
+      frames: this.anims.generateFrameNumbers("player", {
+          start: 0,
+          end: 8
+      }),
+      frameRate: 16,
+      repeat: -1
+    });
 
-        // setting player animation
-        this.anims.create({
-            key: "run",
-            frames: this.anims.generateFrameNumbers("player", {
-                start: 0,
-                end: 8
-            }),
-            frameRate: 16,
-            repeat: -1
-        });
+    this.anims.create({
+    key: "jump",
+      frames: this.anims.generateFrameNumbers("jump", {
+          start: 0,
+          end: 12
+      }),
+      frameRate: 20,
+      repeat: 0
+    })
 
-        this.anims.create({
-          key: "jump",
-            frames: this.anims.generateFrameNumbers("jump", {
-                start: 0,
-                end: 12
-            }),
-            frameRate: 20,
-            repeat: 0
-        })
+    this.anims.create({
+    key: "fall",
+      frames: this.anims.generateFrameNumbers("fall", {
+          start: 0,
+          end: 5
+      }),
+      frameRate: 10,
+      repeat: 0
+    })
 
-        this.anims.create({
-          key: "fall",
-            frames: this.anims.generateFrameNumbers("fall", {
-                start: 0,
-                end: 5
-            }),
-            frameRate: 10,
-            repeat: 0
-        })
+    // setting coin animation
+    this.anims.create({
+        key: "rotate",
+        frames: this.anims.generateFrameNumbers("coin", {
+            start: 0,
+            end: 5
+        }),
+        frameRate: 15,
+        yoyo: true,
+        repeat: -1
+    });
 
-        // setting coin animation
-        this.anims.create({
-            key: "rotate",
-            frames: this.anims.generateFrameNumbers("coin", {
-                start: 0,
-                end: 5
-            }),
-            frameRate: 15,
-            yoyo: true,
-            repeat: -1
-        });
+    // setting fire animation
+    this.anims.create({
+        key: "burn",
+        frames: this.anims.generateFrameNumbers("fire", {
+            start: 0,
+            end: 3
+        }),
+        frameRate: 15,
+        repeat: -1
+    });
 
-        // setting fire animation
-        this.anims.create({
-            key: "burn",
-            frames: this.anims.generateFrameNumbers("fire", {
-                start: 0,
-                end: 3
-            }),
-            frameRate: 15,
-            repeat: -1
-        });
-
-        this.scene.start("PlayGame");
-    }
-}
-
-// playGame scene
-class playGame extends Phaser.Scene{
-    constructor(){
-        super("PlayGame");
-    }
-
-
-    init(){
-      // game variables
-      this.score = 0;
-      this.lives = 3;
-      // this.speed= 1.5;
-      // this.dragon_move = 1;
-      // this.score_text;
-      // this.lives_text;
-    };
-
-    create(){
-
-        // add score text & game text to screen
+    // add score text & game text to screen
         this.scoreText = this.add.text(30, 30, 'score: '+this.score, { fontSize: '32px', fill: '#000000' });
         this.liveText = this.add.text(30, this.sys.game.config.height-680, 'lives: ' + this.lives, {fontSize: '32px', fill: '#000'});
 
@@ -510,27 +455,10 @@ class playGame extends Phaser.Scene{
             let nextPlatformHeight = Phaser.Math.Clamp(nextPlatformGap, minPlatformHeight, maxPlatformHeight);
             this.addPlatform(nextPlatformWidth, game.config.width + nextPlatformWidth / 2, nextPlatformHeight);
         }
-    }
-};
 
-function resize(){
-    let canvas = document.querySelector("canvas");
-    let windowWidth = window.innerWidth;
-    let windowHeight = window.innerHeight;
-    let windowRatio = windowWidth / windowHeight;
-    let gameRatio = game.config.width / game.config.height;
-    if(windowRatio < gameRatio){
-        canvas.style.width = windowWidth + "px";
-        canvas.style.height = (windowWidth / gameRatio) + "px";
-    }
-    else{
-        canvas.style.width = (windowHeight * gameRatio) + "px";
-        canvas.style.height = windowHeight + "px";
-    }
+
+    this.scene.start("PlayGame");
+  }
 }
 
-// ReactDOM.render(
-//       <div>
-//       </div>,
-//   document.getElementById("root") || document.createElement("div")
-// );
+export default playGame;
